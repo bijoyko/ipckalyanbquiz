@@ -1,19 +1,22 @@
 package main
 
 import (
+	"fmt"
 	"html/template"
 	"log"
 	"net/http"
 	"os"
 
 	"github.com/gin-gonic/gin"
-	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/mysql"
+	_ "github.com/jinzhu/gorm/dialects/postgres"
+	_ "github.com/lib/pq"
 )
 
 var Name Names
 var Score int
+var db *gorm.DB
+var err error
 
 type Quiz struct {
 	ID        int    `json:"id" gorm:"primary_key"`
@@ -87,16 +90,39 @@ func main() {
 	router.Run(":" + port)
 }
 
+func getEnv(key, fallback string) string {
+	if value, ok := os.LookupEnv(key); ok {
+		return value
+	}
+	return fallback
+}
+
 func SetupModels() *gorm.DB {
-	db, err := gorm.Open("mysql", "youth_bijoy:Mavericklolol123@tcp(ipckalyan.com:3306)/youth_quiz?charset=utf8mb4&parseTime=True&loc=Local")
+	//postgres://ppvhvfwd:jbcaUVTtUIa_WqALGc7F5DZgQArj_UVa@john.db.elephantsql.com:5432/ppvhvfwd
+
+	user := getEnv("PG_USER", "ppvhvfwd")
+	password := getEnv("PG_PASSWORD", "jbcaUVTtUIa_WqALGc7F5DZgQArj_UVa")
+	host := getEnv("PG_HOST", "john.db.elephantsql.com")
+	port := getEnv("PG_PORT", "5432")
+	database := getEnv("PG_DB", "ppvhvfwd")
+
+	dbinfo := fmt.Sprintf("user=%s password=%s host=%s port=%s dbname=%s sslmode=disable",
+		user,
+		password,
+		host,
+		port,
+		database,
+	)
+
+	db, err = gorm.Open("postgres", dbinfo)
 	db.SingularTable(true)
 	if err != nil {
 		log.Fatalln(err)
 	}
 	log.Println("Connection established")
+	//db.Table("quiz-data").AutoMigrate(&models.Quiz{})
 	return db
 }
-
 func MainPage(c *gin.Context) {
 	t, _ := template.ParseFiles("main.html")
 	t.Execute(c.Writer, nil)
