@@ -21,8 +21,6 @@ func getEnv(key, fallback string) string {
 }
 
 func SetupModels() *gorm.DB {
-	//postgres://ppvhvfwd:jbcaUVTtUIa_WqALGc7F5DZgQArj_UVa@john.db.elephantsql.com:5432/ppvhvfwd
-
 	user := getEnv("PG_USER", "ppvhvfwd")
 	password := getEnv("PG_PASSWORD", "jbcaUVTtUIa_WqALGc7F5DZgQArj_UVa")
 	host := getEnv("PG_HOST", "john.db.elephantsql.com")

@@ -2,12 +2,22 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Thank You for Participation</title>
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <title></title>
     </head>
-      <body>
-        <h1>Thank you for your participation in the Bible Quiz</h1>
+    <body>
+        <h1>
+    Thank you for your participation in the Bible Quiz
+    </h1>
         <br>
-        <p>You have scored a total of {{.}} points. We will see you again tomorrow with more interesting questions</p>
+        <p style="margin-top: 5px; font-size:18px">
+            Hello {{.Name.Firstname}} {{.Name.Lastname}}
+        </p>
+        <p>You have scored a total of {{.Score1}} points. We will see you again tomorrow with more interesting questions</p>
+        <footer>
+            <form action="/viewTopScorers" method="post">
+                <legend style="margin-top: 5px; font-size:15px">View Top Scorers</legend>
+                <input type="submit" name="Submit" value="View";>
+        </footer>
+        </form>
     </body>
 </html>
