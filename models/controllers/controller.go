@@ -14,7 +14,7 @@ var Name models.Names
 var Score int
 
 func MainPage(c *gin.Context) {
-	t, _ := template.ParseFiles("main.html")
+	t, _ := template.ParseFiles("view/main.html")
 	t.Execute(c.Writer, nil)
 }
 
@@ -26,16 +26,16 @@ func ValidateNames(c *gin.Context) { //mvc model
 			Language:  c.PostForm("Language"),
 		}
 		if c.PostForm("Language") == "English" {
-			t, _ := template.ParseFiles("FormEnglish.html")
+			t, _ := template.ParseFiles("view/FormEnglish.html")
 			t.Execute(c.Writer, nil)
 		} else {
-			t, _ := template.ParseFiles("FormMalayalam.html")
+			t, _ := template.ParseFiles("view/FormMalayalam.html")
 			t.Execute(c.Writer, nil)
 		}
 
 	} else {
 		text1 := "Please enter a valid first Name and last name. Also select a language of your choice to proceed\t Blank values are not allowed"
-		t, _ := template.ParseFiles("main.html")
+		t, _ := template.ParseFiles("view/main.html")
 		t.Execute(c.Writer, text1)
 	}
 }
@@ -83,7 +83,7 @@ func Form(c *gin.Context) {
 			Score++
 		}
 	}
-	t, _ := template.ParseFiles("ThankYou.html")
+	t, _ := template.ParseFiles("view/ThankYou.html")
 	t.Execute(c.Writer, Score)
 
 }
