@@ -4,8 +4,8 @@ import (
 	"log"
 	"os"
 
+	"github.com/bijoyko/ipckalyanbquiz/controllers"
 	"github.com/bijoyko/ipckalyanbquiz/models"
-	"github.com/bijoyko/ipckalyanbquiz/models/controllers"
 	"github.com/gin-gonic/gin"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	_ "github.com/lib/pq"
