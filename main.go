@@ -19,7 +19,7 @@ func main() {
 	}
 	router := gin.New()
 	router.Use(gin.Logger())
-	router.LoadHTMLGlob("*.html")
+	router.LoadHTMLGlob("view/*.html")
 	db := models.SetupModels()
 	router.Use(func(c *gin.Context) {
 		c.Set("db", db)
@@ -28,5 +28,5 @@ func main() {
 	router.GET("/", controllers.MainPage)
 	router.POST("/next", controllers.ValidateNames)
 	router.POST("/submit", controllers.Form)
-	router.Run(":" + port)
+	router.Run(":" + "port")
 }
