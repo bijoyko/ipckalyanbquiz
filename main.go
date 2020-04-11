@@ -13,7 +13,6 @@ import (
 
 func main() {
 	port := os.Getenv("PORT")
-
 	if port == "" {
 		log.Fatal("$PORT must be set")
 	}
@@ -28,5 +27,5 @@ func main() {
 	router.GET("/", controllers.MainPage)
 	router.POST("/next", controllers.ValidateNames)
 	router.POST("/submit", controllers.Form)
-	router.Run(":" + "port")
+	router.Run(":" + port)
 }

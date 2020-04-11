@@ -18,7 +18,7 @@ func MainPage(c *gin.Context) {
 	t.Execute(c.Writer, nil)
 }
 
-func ValidateNames(c *gin.Context) { //mvc model
+func ValidateNames(c *gin.Context) {
 	if c.PostForm("Firstname") != "" && c.PostForm("Lastname") != "" && c.PostForm("Language") != "" {
 		Name = models.Names{
 			Firstname: c.PostForm("Firstname"),
