@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -238,7 +239,9 @@ func ScoreView(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
 	var quizF []models.Scorers
 	db.Table("quiztable").Select("firstname, lastname, points").Where("points = ?", "10").Find(&quizF)
-
-	c.JSON(http.StatusOK, gin.H{"TopScorers": quizF})
-
+	t, err := template.ParseFiles("view/Topscorers.html")
+	if err != nil {
+		fmt.Println(err)
+	}
+	t.Execute(c.Writer, quizF)
 }

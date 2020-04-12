@@ -1,0 +1,36 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Top Scorers</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    </head>
+    <body style="background:linear-gradient(to left,   
+    #5aecff 50%,
+    #d9e1e6 0%,
+    #b1e1f1 50%,
+    #33ccff 100%);">
+        <h1>
+  These are the top scorers of this bible quiz
+    </h1>
+    <table class="table table-striped table-bordered table-hover table-dark">
+        <thead>
+        <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Points</th>
+        </tr>
+        </thead>
+        <tbody>
+        
+        {{range $index, $element := .}}
+        <tr>
+        <td>{{$element.Firstname}}</td>
+        <td>{{$element.Lastname}}</td>
+        <td>{{$element.Points}}</td>
+        {{end}}
+        </tr>
+        </tbody>
+    </table>
+    </body>
+</html>
