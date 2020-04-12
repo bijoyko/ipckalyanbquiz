@@ -31,5 +31,6 @@ func main() {
 	router.POST("/next", controllers.ValidateNames)
 	router.POST("/submit", controllers.Form)
 	router.POST("/viewTopScorers", controllers.ScoreView)
+	router.GET("master-quiztable", controllers.Quiztable)
 	router.Run(":" + port)
 }

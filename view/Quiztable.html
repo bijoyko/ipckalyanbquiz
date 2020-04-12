@@ -1,0 +1,58 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Top Scorers</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    </head>
+    <body style="background:linear-gradient(to left,   
+    #5aecff 50%,
+    #d9e1e6 0%,
+    #b1e1f1 50%,
+    #33ccff 100%);">
+        <h1>
+  These are the top scorers of this bible quiz
+    </h1>
+    <table class="table table-striped table-bordered table-hover table-dark">
+        <thead>
+        <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Language</th>
+            <th>q1</th>
+            <th>q2</th>
+            <th>q3</th>
+            <th>q4</th>
+            <th>q5</th>
+            <th>q6</th>
+            <th>q7</th>
+            <th>q8</th>
+            <th>q9</th>
+            <th>q10</th>
+            <th>Points</th>
+        </tr>
+        </thead>
+        <tbody>
+        
+        {{range $index, $element := .}}
+        <tr>
+        <td>{{$element.Firstname}}</td>
+        <td>{{$element.Lastname}}</td>
+        <td>{{$element.Language}}</td>
+        <td>{{$element.Q1}}</td>
+        <td>{{$element.Q2}}</td>
+        <td>{{$element.Q3}}</td>
+        <td>{{$element.Q4}}</td>
+        <td>{{$element.Q5}}</td>
+        <td>{{$element.Q6}}</td>
+        <td>{{$element.Q7}}</td>
+        <td>{{$element.Q8}}</td>
+        <td>{{$element.Q9}}</td>
+        <td>{{$element.Q10}}</td>
+        <td>{{$element.Points}}</td>
+        {{end}}
+        </tr>
+        </tbody>
+    </table>
+    </body>
+</html>

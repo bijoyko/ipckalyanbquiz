@@ -245,3 +245,14 @@ func ScoreView(c *gin.Context) {
 	}
 	t.Execute(c.Writer, quizF)
 }
+
+func Quiztable(c *gin.Context) {
+	db := c.MustGet("db").(*gorm.DB)
+	var quizT []models.Quiz
+	db.Table("quiztable").Find(&quizT)
+	t, err := template.ParseFiles("view/Quiztable.html")
+	if err != nil {
+		fmt.Println(err)
+	}
+	t.Execute(c.Writer, quizT)
+}
