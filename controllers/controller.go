@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/bijoyko/ipckalyanbquiz/models"
+	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 )
@@ -16,17 +17,39 @@ var Score int
 var pulledquestions []string
 var p1 models.QuestionsForm
 
-type participation struct {
-	Name   models.Names
-	Score1 int
-}
+// type participation struct {
+// 	Name   models.Names
+// 	Score1 int
+// }
 
 func MainPage(c *gin.Context) {
+
+	session := sessions.Default(c)
+	var count int
+	v := session.Get("count")
+	if v == nil {
+		count = 0
+	} else {
+		count = v.(int)
+		count++
+	}
+	session.Set("count", count)
+	session.Save()
 	t, _ := template.ParseFiles("view/main.html")
 	t.Execute(c.Writer, nil)
 }
 
 func ValidateNames(c *gin.Context) {
+	session := sessions.Default(c)
+	var count int
+	v := session.Get("count")
+	if v == nil {
+		count = 0
+	} else {
+		count = v.(int)
+	}
+	session.Set("count", count)
+	session.Save()
 	db := c.MustGet("db").(*gorm.DB)
 	var questions models.QuestionsForm
 
@@ -177,6 +200,16 @@ func ValidateNames(c *gin.Context) {
 }
 
 func Form(c *gin.Context) {
+	session := sessions.Default(c)
+	var count int
+	v := session.Get("count")
+	if v == nil {
+		count = 0
+	} else {
+		count = v.(int)
+	}
+	session.Set("count", count)
+	session.Save()
 
 	db := c.MustGet("db").(*gorm.DB)
 
@@ -223,19 +256,35 @@ func Form(c *gin.Context) {
 		Q3: input.Q3, Q4: input.Q4, Q5: input.Q5, Q6: input.Q6, Q7: input.Q7, Q8: input.Q8, Q9: input.Q9, Q10: input.Q10, Points: Score}
 	db.Table("quiztable").Create(&quizD)
 
-	participant := participation{
-		Name: models.Names{
-			Firstname: Name.Firstname,
-			Lastname:  Name.Lastname,
-		},
-		Score1: Score,
+	// participant := participation{
+	// 	Name: models.Names{
+	// 		Firstname: Name.Firstname,
+	// 		Lastname:  Name.Lastname,
+	// 	},
+	// 	Score1: Score,
+	// }
+
+	Name = models.Names{
+		Firstname: Name.Firstname,
+		Lastname:  Name.Lastname,
+		Score:     Score,
 	}
 
 	t, _ := template.ParseFiles("view/ThankYou.html")
-	t.Execute(c.Writer, participant)
+	t.Execute(c.Writer, Name)
 }
 
 func ScoreView(c *gin.Context) {
+	session := sessions.Default(c)
+	var count int
+	v := session.Get("count")
+	if v == nil {
+		count = 0
+	} else {
+		count = v.(int)
+	}
+	session.Set("count", count)
+	session.Save()
 	db := c.MustGet("db").(*gorm.DB)
 	var quizF []models.Scorers
 	db.Table("quiztable").Select("firstname, lastname, points").Where("points = ?", "10").Find(&quizF)
@@ -247,6 +296,16 @@ func ScoreView(c *gin.Context) {
 }
 
 func Quiztable(c *gin.Context) {
+	session := sessions.Default(c)
+	var count int
+	v := session.Get("count")
+	if v == nil {
+		count = 0
+	} else {
+		count = v.(int)
+	}
+	session.Set("count", count)
+	session.Save()
 	db := c.MustGet("db").(*gorm.DB)
 	var quizT []models.Quiz
 	db.Table("quiztable").Find(&quizT)

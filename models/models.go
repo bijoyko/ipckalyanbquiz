@@ -38,6 +38,7 @@ type Names struct {
 	Firstname string
 	Lastname  string
 	Language  string
+	Score     int
 }
 
 type Insertanswers struct {

@@ -6,17 +6,39 @@ import (
 	"net/http"
 
 	"github.com/bijoyko/ipckalyanbquiz/models"
+	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 )
 
 //admin begins here
 func LoadAdmin(c *gin.Context) {
+	session := sessions.Default(c)
+	var count int
+	v := session.Get("count")
+	if v == nil {
+		count = 0
+	} else {
+		count = v.(int)
+		count++
+	}
+	session.Set("count", count)
+	session.Save()
 	t, _ := template.ParseFiles("view/admin.html")
 	t.Execute(c.Writer, nil)
 }
 
 func VerifyAdmin(c *gin.Context) {
+	session := sessions.Default(c)
+	var count int
+	v := session.Get("count")
+	if v == nil {
+		count = 0
+	} else {
+		count = v.(int)
+	}
+	session.Set("count", count)
+	session.Save()
 	if c.PostForm("Username") == "Bijoy" && c.PostForm("Password") == "Lolol_123" {
 		t, err := template.ParseFiles("view/editquestions.html")
 		if err != nil {
@@ -34,6 +56,16 @@ func VerifyAdmin(c *gin.Context) {
 }
 
 func UpdateQuestions(c *gin.Context) {
+	session := sessions.Default(c)
+	var count int
+	v := session.Get("count")
+	if v == nil {
+		count = 0
+	} else {
+		count = v.(int)
+	}
+	session.Set("count", count)
+	session.Save()
 	db := c.MustGet("db").(*gorm.DB)
 
 	var quizD models.QuestionsForm

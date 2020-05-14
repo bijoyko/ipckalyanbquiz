@@ -6,6 +6,8 @@ import (
 
 	"github.com/bijoyko/ipckalyanbquiz/controllers"
 	"github.com/bijoyko/ipckalyanbquiz/models"
+	"github.com/gin-contrib/sessions"
+	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	_ "github.com/lib/pq"
@@ -16,7 +18,9 @@ func main() {
 	if port == "" {
 		log.Fatal("$PORT must be set")
 	}
-	router := gin.New()
+	router := gin.Default()
+	store := cookie.NewStore([]byte("secret"))
+	router.Use(sessions.Sessions("mysession", store))
 	router.Use(gin.Logger())
 	router.LoadHTMLGlob("view/*.html")
 	db := models.SetupModels()
