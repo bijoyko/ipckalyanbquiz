@@ -19,8 +19,6 @@ func main() {
 		log.Fatal("$PORT must be set")
 	}
 	router := gin.Default()
-	store := cookie.NewStore([]byte("secret"))
-	router.Use(sessions.Sessions("mysession", store))
 	router.Use(gin.Logger())
 	router.LoadHTMLGlob("view/*.html")
 	db := models.SetupModels()
@@ -28,6 +26,9 @@ func main() {
 		c.Set("db", db)
 		c.Next()
 	})
+
+	store := cookie.NewStore([]byte("secret"))
+	router.Use(sessions.Sessions("mysession", store))
 
 	router.GET("/", controllers.MainPage)
 	router.POST("/next", controllers.ValidateNames)

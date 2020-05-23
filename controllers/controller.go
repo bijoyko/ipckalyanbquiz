@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/bijoyko/ipckalyanbquiz/models"
+	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 )
@@ -14,12 +15,6 @@ import (
 var Score int
 var pulledquestions []string
 var p1 models.QuestionsForm
-var Name models.Names
-
-type participation struct {
-	Name   models.Names
-	Score1 int
-}
 
 func MainPage(c *gin.Context) {
 	t, _ := template.ParseFiles("view/main.html")
@@ -32,6 +27,12 @@ func ValidateNames(c *gin.Context) {
 		fname := c.PostForm("Firstname")
 		lname := c.PostForm("Lastname")
 		lang := c.PostForm("Language")
+		session := sessions.Default(c)
+		session.Set("Fname", fname)
+		session.Set("Lname", lname)
+		session.Set("Lang", lang)
+		session.Save()
+
 		c.Redirect(http.StatusFound, "/next/"+fname+"/"+lname+"/"+lang)
 
 		if c.Param("id3") == "English" {
@@ -178,21 +179,9 @@ func LoadForm(c *gin.Context) {
 	}
 
 	if c.Param("id3") == "English" {
-		Name = models.Names{
-			Firstname: c.Param("id1"),
-			Lastname:  c.Param("id2"),
-			Language:  c.Param("id3"),
-		}
-		fmt.Println(Name)
 		t, _ := template.ParseFiles("view/FormEnglish.html")
 		t.Execute(c.Writer, p1)
 	} else {
-		Name = models.Names{
-			Firstname: c.Param("id1"),
-			Lastname:  c.Param("id2"),
-			Language:  c.Param("id3"),
-		}
-		fmt.Println(Name)
 		t, _ := template.ParseFiles("view/FormMalayalam.html")
 		t.Execute(c.Writer, p1)
 	}
@@ -202,11 +191,18 @@ func LoadForm(c *gin.Context) {
 func Form(c *gin.Context) {
 
 	db := c.MustGet("db").(*gorm.DB)
+	session := sessions.Default(c)
+
+	// c.Redirect(http.StatusFound, "/submit")
+
+	fname := fmt.Sprintf("%v", session.Get("Fname"))
+	lname := fmt.Sprintf("%v", session.Get("Lname"))
+	lang := fmt.Sprintf("%v", session.Get("Lang"))
 
 	input := models.EnterQuizData{
-		Firstname: Name.Firstname,
-		Lastname:  Name.Lastname,
-		Language:  Name.Language,
+		Firstname: fname,
+		Lastname:  lname,
+		Language:  lang,
 		Q1:        c.PostForm("Q1"),
 		Q2:        c.PostForm("Q2"),
 		Q3:        c.PostForm("Q3"),
@@ -246,16 +242,26 @@ func Form(c *gin.Context) {
 		Q3: input.Q3, Q4: input.Q4, Q5: input.Q5, Q6: input.Q6, Q7: input.Q7, Q8: input.Q8, Q9: input.Q9, Q10: input.Q10, Points: Score}
 	db.Table("quiztable").Create(&quizD)
 
+	session.Set("Score", Score)
+	session.Save()
+
+	score := fmt.Sprintf("%v", session.Get("Score"))
+
+	type participation struct {
+		Firstname string
+		Lastname  string
+		Score     string
+	}
+
 	participant := participation{
-		Name: models.Names{
-			Firstname: Name.Firstname,
-			Lastname:  Name.Lastname,
-		},
-		Score1: Score,
+		Firstname: fname,
+		Lastname:  lname,
+		Score:     score,
 	}
 
 	t, _ := template.ParseFiles("view/ThankYou.html")
 	t.Execute(c.Writer, participant)
+	session.Clear()
 }
 
 func ScoreView(c *gin.Context) {
@@ -279,3 +285,9 @@ func Quiztable(c *gin.Context) {
 	}
 	t.Execute(c.Writer, quizT)
 }
+
+// session := sessions.Default(c)
+// session.Set("Fname", fname)
+// session.Set("Lname", lname)
+// session.Set("Lang", lang)
+// session.Save()
