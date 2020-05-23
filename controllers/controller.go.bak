@@ -14,7 +14,7 @@ import (
 var Score int
 var pulledquestions []string
 var p1 models.QuestionsForm
-var Name models.Names
+var ch chan models.Names
 
 type participation struct {
 	Name   models.Names
@@ -27,28 +27,6 @@ func MainPage(c *gin.Context) {
 }
 
 func ValidateNames(c *gin.Context) {
-
-	if c.PostForm("Firstname") != "" && c.PostForm("Lastname") != "" && c.PostForm("Language") != "" {
-		fname := c.PostForm("Firstname")
-		lname := c.PostForm("Lastname")
-		lang := c.PostForm("Language")
-		c.Redirect(http.StatusFound, "/next/"+fname+"/"+lname+"/"+lang)
-
-		if c.Param("id3") == "English" {
-			t, _ := template.ParseFiles("view/FormEnglish.html")
-			t.Execute(c.Writer, p1)
-		} else {
-			t, _ := template.ParseFiles("view/FormMalayalam.html")
-			t.Execute(c.Writer, p1)
-		}
-	} else {
-		text1 := "Please enter a valid first Name and last name. Also select a language of your choice to proceed\t Blank values are not allowed"
-		t, _ := template.ParseFiles("view/main.html")
-		t.Execute(c.Writer, text1)
-	}
-}
-
-func LoadForm(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
 	var questions models.QuestionsForm
 
@@ -177,36 +155,54 @@ func LoadForm(c *gin.Context) {
 		Md10: questions.Md10,
 	}
 
-	if c.Param("id3") == "English" {
-		Name = models.Names{
-			Firstname: c.Param("id1"),
-			Lastname:  c.Param("id2"),
-			Language:  c.Param("id3"),
+	if c.PostForm("Firstname") != "" && c.PostForm("Lastname") != "" && c.PostForm("Language") != "" {
+		if c.PostForm("Language") == "English" {
+			Name := models.Names{
+				Firstname: c.PostForm("Firstname"),
+				Lastname:  c.PostForm("Lastname"),
+				Language:  c.PostForm("Language"),
+			}
+			t, _ := template.ParseFiles("view/FormEnglish.html")
+			t.Execute(c.Writer, p1)
+		} else {
+			Name := models.Names{
+				Firstname: c.PostForm("Firstname"),
+				Lastname:  c.PostForm("Lastname"),
+				Language:  c.PostForm("Language"),
+			}
+			t, _ := template.ParseFiles("view/FormMalayalam.html")
+			t.Execute(c.Writer, p1)
 		}
-		fmt.Println(Name)
-		t, _ := template.ParseFiles("view/FormEnglish.html")
-		t.Execute(c.Writer, p1)
 	} else {
-		Name = models.Names{
-			Firstname: c.Param("id1"),
-			Lastname:  c.Param("id2"),
-			Language:  c.Param("id3"),
-		}
-		fmt.Println(Name)
-		t, _ := template.ParseFiles("view/FormMalayalam.html")
-		t.Execute(c.Writer, p1)
+		text1 := "Please enter a valid first Name and last name. Also select a language of your choice to proceed\t Blank values are not allowed"
+		t, _ := template.ParseFiles("view/main.html")
+		t.Execute(c.Writer, text1)
 	}
-
 }
 
-func Form(c *gin.Context) {
+// func SetCookie(c *gin.Context) {
 
+// 	cookie, err := c.Cookie("gin_cookie")
+
+// 	if err != nil {
+// 		fmt.Println(err)
+// 		c.SetCookie("bquiz", Name.Firstname, 999, "/", "", true, true)
+// 		// c.SetCookie("bquiz", Name.Lastname, 999, "/", "", true, true)
+// 		// c.SetCookie("bquiz", Name.Language, 999, "/", "", true, true)
+// 	}
+// 	fmt.Println("here in setcookies")
+// 	fmt.Printf("Cookie value: %s \n", cookie)
+// }
+
+func Form(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
+	n1 := models.Names{}
+	n1 = <-ch
 
 	input := models.EnterQuizData{
-		Firstname: Name.Firstname,
-		Lastname:  Name.Lastname,
-		Language:  Name.Language,
+		Firstname: n1.Firstname,
+		Lastname:  n1.Lastname,
+		Language:  n1.Language,
 		Q1:        c.PostForm("Q1"),
 		Q2:        c.PostForm("Q2"),
 		Q3:        c.PostForm("Q3"),
@@ -248,12 +244,17 @@ func Form(c *gin.Context) {
 
 	participant := participation{
 		Name: models.Names{
-			Firstname: Name.Firstname,
-			Lastname:  Name.Lastname,
+			Firstname: n1.Firstname,
+			Lastname:  n1.Lastname,
 		},
 		Score1: Score,
 	}
 
+	t, _ := template.ParseFiles("view/ThankYou.html")
+	t.Execute(c.Writer, participant)
+}
+
+func LoadThankYou(c *gin.Context) {
 	t, _ := template.ParseFiles("view/ThankYou.html")
 	t.Execute(c.Writer, participant)
 }
