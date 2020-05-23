@@ -1,6 +1,9 @@
 package main
 
 import (
+	"log"
+	"os"
+
 	"github.com/bijoyko/ipckalyanbquiz/controllers"
 	"github.com/bijoyko/ipckalyanbquiz/models"
 	"github.com/gin-contrib/sessions"
@@ -11,10 +14,10 @@ import (
 )
 
 func main() {
-	// port := os.Getenv("PORT")
-	// if port == "" {
-	// 	log.Fatal("$PORT must be set")
-	// }
+	port := os.Getenv("PORT")
+	if port == "" {
+		log.Fatal("$PORT must be set")
+	}
 	router := gin.Default()
 	store := cookie.NewStore([]byte("secret"))
 	router.Use(sessions.Sessions("mysession", store))
@@ -36,7 +39,6 @@ func main() {
 	router.POST("/adminlogin", controllers.VerifyAdmin)
 	router.POST("/updatequestions", controllers.UpdateQuestions)
 
-	// router.Run(":" + port)
-	router.Run(":9090")
+	router.Run(":" + port)
 
 }
