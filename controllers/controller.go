@@ -15,6 +15,7 @@ import (
 var Score int
 var pulledquestions []string
 var p1 models.QuestionsForm
+var a1 models.AnswersForm
 
 func MainPage(c *gin.Context) {
 	t, _ := template.ParseFiles("view/main.html")
@@ -275,6 +276,54 @@ func ScoreView(c *gin.Context) {
 	t.Execute(c.Writer, quizF)
 }
 
+func CorrectAnswers(c *gin.Context) {
+	db := c.MustGet("db").(*gorm.DB)
+	var questions models.AnswersForm
+	if err := db.Table("updatequiz").First(&questions).Error; err != nil {
+		log.Fatalln(err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found!"})
+		return
+	}
+
+	//questions pulled up from database
+	pulledquestions = []string{questions.Q1e, questions.Q2e, questions.Q3e, questions.Q4e, questions.Q5e, questions.Q6e, questions.Q7e,
+		questions.Q8e, questions.Q9e, questions.Q10e}
+
+	//method to fetch correct answers from the db from another table
+	var quiz models.Quiz
+	if err := db.Table("answersquiz").First(&quiz).Error; err != nil {
+		log.Fatalln(err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found!"})
+		return
+	}
+
+	a1 = models.AnswersForm{
+		Q1e:   questions.Q1e,
+		Q2e:   questions.Q2e,
+		Q3e:   questions.Q3e,
+		Q4e:   questions.Q4e,
+		Q5e:   questions.Q5e,
+		Q6e:   questions.Q6e,
+		Q7e:   questions.Q7e,
+		Q8e:   questions.Q8e,
+		Q9e:   questions.Q9e,
+		Q10e:  questions.Q10e,
+		Ans1:  quiz.Q1,
+		Ans2:  quiz.Q2,
+		Ans3:  quiz.Q3,
+		Ans4:  quiz.Q4,
+		Ans5:  quiz.Q5,
+		Ans6:  quiz.Q6,
+		Ans7:  quiz.Q7,
+		Ans8:  quiz.Q8,
+		Ans9:  quiz.Q9,
+		Ans10: quiz.Q10,
+	}
+
+	t, _ := template.ParseFiles("view/Answers.html")
+	t.Execute(c.Writer, a1)
+}
+
 func Quiztable(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
 	var quizT []models.Quiz
@@ -285,9 +334,3 @@ func Quiztable(c *gin.Context) {
 	}
 	t.Execute(c.Writer, quizT)
 }
-
-// session := sessions.Default(c)
-// session.Set("Fname", fname)
-// session.Set("Lname", lname)
-// session.Set("Lang", lang)
-// session.Save()

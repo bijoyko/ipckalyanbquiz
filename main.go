@@ -34,12 +34,11 @@ func main() {
 	router.POST("/next", controllers.ValidateNames)
 	router.GET("/next/:id1/:id2/:id3", controllers.LoadForm)
 	router.POST("/submit", controllers.Form)
+	router.POST("/viewCorrectAnswers", controllers.CorrectAnswers)
 	router.POST("/viewTopScorers", controllers.ScoreView)
 	router.GET("master-quiztable", controllers.Quiztable)
 	router.GET("/admin-bijoy", controllers.LoadAdmin)
 	router.POST("/adminlogin", controllers.VerifyAdmin)
 	router.POST("/updatequestions", controllers.UpdateQuestions)
-
 	router.Run(":" + port)
-
 }

@@ -172,6 +172,30 @@ type QuestionsForm struct {
 	Md10 string `json:"md10"`
 }
 
+type AnswersForm struct {
+	ID    int    `json:"id" gorm:"primary_key"`
+	Q1e   string `json:"q1e"`
+	Q2e   string `json:"q2e"`
+	Q3e   string `json:"q3e"`
+	Q4e   string `json:"q4e"`
+	Q5e   string `json:"q5e"`
+	Q6e   string `json:"q6e"`
+	Q7e   string `json:"q7e"`
+	Q8e   string `json:"q8e"`
+	Q9e   string `json:"q9e"`
+	Q10e  string `json:"q10e"`
+	Ans1  string
+	Ans2  string
+	Ans3  string
+	Ans4  string
+	Ans5  string
+	Ans6  string
+	Ans7  string
+	Ans8  string
+	Ans9  string
+	Ans10 string
+}
+
 type UpdateForm struct {
 	Q1e  string `json:"q1e" binding:"required"`
 	Q1m  string `json:"q1m" binding:"required"`

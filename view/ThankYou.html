@@ -18,11 +18,18 @@
             Hello {{.Firstname}} {{.Lastname}}
         </p>
         <p>You have scored a total of {{.Score}} points. We will see you again tomorrow with more interesting questions</p>
-        <footer>
+        <form action="/viewCorrectAnswers" method="post">
+            <legend style="margin-top: 5px; font-size:15px">Click <b>here</b> to view the correct answers</legend>
+            <input type="submit" name="Submit" value="here";>
+        </form><br><br></br></br>
+        <div class="wrapper" style="font-size: small";>
             <form action="/viewTopScorers" method="post">
-                <legend style="margin-top: 5px; font-size:15px">View Top Scorers</legend>
-                <input type="submit" name="Submit" value="View";>
-        </footer>
-        </form>
+                <legend style="margin-top: 5px; font-size:15px"><b><i>View Top Scorers</i></b></legend>
+                <input type="submit" name="Submit" value="view";>
+            </form>
+        </div>
+        <footer style=position:fixed;bottom:0;left:5%;right:0;height:30px;>
+           quiz created by Bijoy Kunnappillil     
+    </footer>
     </body>
 </html>
